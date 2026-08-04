@@ -1,26 +1,107 @@
 @import "tailwindcss";
 
+@theme {
+  --color-brand: #b89870;
+  --color-brand-dim: rgba(184, 152, 112, 0.08);
+  --color-brand-dark: #9b7d57;
+  
+  --color-ivory-bg: #fdfcfb;
+  --color-ivory-card: #ffffff;
+  --color-ivory-hover: #f9f7f4;
+  --color-ivory-border: #e6dfd7;
+  --color-ivory-border-glow: rgba(184, 152, 112, 0.25);
+  --color-ivory-text-muted: #706a62;
+  
+  --font-serif: Georgia, Cambria, "Times New Roman", Times, serif;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #fdfcfb;
+  --foreground: #201e1c;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
+  background-image: linear-gradient(rgba(253, 252, 251, 0.78), rgba(253, 252, 251, 0.78)), url('/main bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Elegant Editorial Style */
+.bg-editorial-pattern {
+  background-image: 
+    linear-gradient(to right, rgba(184, 152, 112, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(184, 152, 112, 0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.text-cursive {
+  font-family: Georgia, Cambria, "Times New Roman", Times, serif;
+  font-style: italic;
+}
+
+/* Glassmorphism for Light Mode */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(230, 223, 215, 0.7);
+}
+
+.glass-panel-glow {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(184, 152, 112, 0.35);
+}
+
+/* Custom Scrollbar for Ivory Theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fdfcfb;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #e6dfd7;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b89870;
+}
+
+/* Radar & Graphic animations */
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-draw {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: dash 2s ease-out forwards;
+}
+
+/* Slide in animation */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-slideUp {
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
