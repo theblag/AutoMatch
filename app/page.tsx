@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { getRecommendations, UserPreferences, carsDatabase } from './data/cars';
+import { getRecommendations, UserPreferences, carsDatabase, formatINR } from './data/cars';
 import TelemetryQuiz from './components/TelemetryQuiz';
 import CarCard from './components/CarCard';
 import CarComparison from './components/CarComparison';
@@ -13,7 +13,7 @@ export default function Home() {
   const [userPrefs, setUserPrefs] = useState<UserPreferences | null>(null);
 
   // Filter adjustment states (initialized from quiz preferences but modifiable)
-  const [activeBudget, setActiveBudget] = useState<number>(65000);
+  const [activeBudget, setActiveBudget] = useState<number>(5500000);
   const [activeTypes, setActiveTypes] = useState<string[]>([]);
   const [activeFuels, setActiveFuels] = useState<string[]>([]);
 
@@ -194,13 +194,13 @@ export default function Home() {
               <div className="space-y-2">
                 <div className="flex justify-between font-serif text-[10px] text-ivory-text-muted">
                   <span>MAX BUDGET</span>
-                  <span className="text-brand font-mono font-bold">${activeBudget.toLocaleString()}</span>
+                  <span className="text-brand font-mono font-bold">{formatINR(activeBudget)}</span>
                 </div>
                 <input
                   type="range"
-                  min="20000"
-                  max="150000"
-                  step="5000"
+                  min="1500000"
+                  max="15000000"
+                  step="250000"
                   value={activeBudget}
                   onChange={e => setActiveBudget(Number(e.target.value))}
                   className="w-full h-1 bg-[#e8e2dc] rounded-lg appearance-none cursor-pointer accent-brand"

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Car, UserPreferences } from '../data/cars';
+import { Car, UserPreferences, formatINR, formatINRFull } from '../data/cars';
 import RadarMetric from './RadarMetric';
 
 interface CarCardProps {
@@ -103,8 +103,10 @@ export default function CarCard({
           <h3 className="text-2xl md:text-3xl font-serif text-foreground font-semibold mt-2.5 tracking-tight">
             {car.make} <span className="text-brand font-normal italic font-serif">{car.model}</span>
           </h3>
-          <p className="font-mono text-sm text-foreground font-bold mt-1.5">
-            ${car.price.toLocaleString()} <span className="text-[10px] text-ivory-text-muted font-normal italic font-serif">MSRP</span>
+          <p className="font-mono text-sm text-foreground font-bold mt-1.5 flex flex-wrap items-baseline gap-1.5">
+            <span>{formatINR(car.price)}</span>
+            <span className="text-xs text-ivory-text-muted font-mono font-normal">({formatINRFull(car.price)})</span>
+            <span className="text-[10px] text-ivory-text-muted font-normal italic font-serif">EST. EX-SHOWROOM</span>
           </p>
         </div>
 

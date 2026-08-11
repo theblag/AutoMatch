@@ -42,13 +42,29 @@ export interface UserPreferences {
   };
 }
 
+export function formatINR(val: number): string {
+  if (val >= 10000000) {
+    const cr = (val / 10000000).toFixed(2);
+    return `₹${cr.replace(/\.00$/, '')} Cr`;
+  }
+  if (val >= 100000) {
+    const lakh = (val / 100000).toFixed(2);
+    return `₹${lakh.replace(/\.00$/, '')} Lakh`;
+  }
+  return `₹${val.toLocaleString('en-IN')}`;
+}
+
+export function formatINRFull(val: number): string {
+  return `₹${val.toLocaleString('en-IN')}`;
+}
+
 export const carsDatabase: Car[] = [
   {
     id: 'tesla-model-y',
     make: 'Tesla',
     model: 'Model Y Long Range',
     year: 2026,
-    price: 47990,
+    price: 4100000,
     type: 'SUV',
     fuelType: 'Electric',
     image: '/cars/tesla-model-y.png',
@@ -78,7 +94,7 @@ export const carsDatabase: Car[] = [
     make: 'Porsche',
     model: 'Taycan 4S',
     year: 2026,
-    price: 118500,
+    price: 10100000,
     type: 'Sedan',
     fuelType: 'Electric',
     image: '/cars/porsche-taycan.png',
@@ -108,7 +124,7 @@ export const carsDatabase: Car[] = [
     make: 'Toyota',
     model: 'RAV4 Prime XSE',
     year: 2026,
-    price: 43690,
+    price: 3700000,
     type: 'SUV',
     fuelType: 'Hybrid',
     image: '/cars/toyota-rav4-prime.png',
@@ -138,7 +154,7 @@ export const carsDatabase: Car[] = [
     make: 'Mazda',
     model: 'MX-5 Miata Club',
     year: 2026,
-    price: 32500,
+    price: 2750000,
     type: 'Coupe',
     fuelType: 'Gas',
     image: '/cars/mazda-mx-5.png',
@@ -168,7 +184,7 @@ export const carsDatabase: Car[] = [
     make: 'Rivian',
     model: 'R1S Dual-Motor Max Pack',
     year: 2026,
-    price: 89000,
+    price: 7600000,
     type: 'SUV',
     fuelType: 'Electric',
     image: '/cars/rivian-r1s.png',
@@ -198,7 +214,7 @@ export const carsDatabase: Car[] = [
     make: 'Honda',
     model: 'Civic Sport Hybrid',
     year: 2026,
-    price: 28750,
+    price: 2450000,
     type: 'Sedan',
     fuelType: 'Hybrid',
     image: '/cars/honda-civic.png',
@@ -228,7 +244,7 @@ export const carsDatabase: Car[] = [
     make: 'Hyundai',
     model: 'Ioniq 5 N',
     year: 2026,
-    price: 66000,
+    price: 5600000,
     type: 'Hatchback',
     fuelType: 'Electric',
     image: '/cars/hyundai-ioniq-5-n.png',
@@ -258,7 +274,7 @@ export const carsDatabase: Car[] = [
     make: 'Ford',
     model: 'F-150 Lightning Flash',
     year: 2026,
-    price: 67995,
+    price: 5800000,
     type: 'Truck',
     fuelType: 'Electric',
     image: '/cars/ford-f150-lightning.png',
@@ -288,7 +304,7 @@ export const carsDatabase: Car[] = [
     make: 'BMW',
     model: 'M3 Competition xDrive',
     year: 2026,
-    price: 84300,
+    price: 7200000,
     type: 'Sedan',
     fuelType: 'Gas',
     image: '/cars/bmw-m3-competition.png',
@@ -318,7 +334,7 @@ export const carsDatabase: Car[] = [
     make: 'Subaru',
     model: 'Outback Wilderness',
     year: 2026,
-    price: 40295,
+    price: 3450000,
     type: 'SUV',
     fuelType: 'Gas',
     image: '/cars/subaru-outback-wilderness.png',

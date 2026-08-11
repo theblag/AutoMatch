@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Car } from '../data/cars';
+import { Car, formatINR, formatINRFull } from '../data/cars';
 
 interface CarComparisonProps {
   selectedCars: Car[];
@@ -20,7 +20,11 @@ export default function CarComparison({ selectedCars, onRemove, onClose }: CarCo
   }
 
   const specsRows: readonly SpecsRow[] = [
-    { label: 'Price (MSRP)', key: 'price', format: (val: number) => `$${val.toLocaleString()}` },
+    {
+      label: 'Price (Ex-Showroom)',
+      key: 'price',
+      format: (val: number) => `${formatINR(val)} (${formatINRFull(val)})`
+    },
     { label: 'Propulsion', key: 'fuelType' },
     { label: 'Structure', key: 'type' },
     { label: 'Model Year', key: 'year' },

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { UserPreferences } from '../data/cars';
+import { UserPreferences, formatINR, formatINRFull } from '../data/cars';
 
 interface TelemetryQuizProps {
   onComplete: (prefs: UserPreferences) => void;
@@ -9,7 +9,7 @@ interface TelemetryQuizProps {
 
 export default function TelemetryQuiz({ onComplete }: TelemetryQuizProps) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [budget, setBudget] = useState<number>(65000);
+  const [budget, setBudget] = useState<number>(5500000);
   const [types, setTypes] = useState<string[]>([]);
   const [fuels, setFuels] = useState<string[]>([]);
   const [metrics, setMetrics] = useState<UserPreferences['metrics']>({
@@ -89,23 +89,26 @@ export default function TelemetryQuiz({ onComplete }: TelemetryQuizProps) {
             </p>
             <div className="space-y-5 pt-4">
               <div className="flex justify-between items-end font-mono text-[10px] text-ivory-text-muted">
-                <span>MIN: $20,000</span>
-                <span className="text-brand text-xl font-bold font-serif italic">
-                  ${budget.toLocaleString()}
+                <span>MIN: ₹15 Lakh</span>
+                <span className="text-brand text-xl font-bold font-serif italic flex items-baseline gap-1.5">
+                  {formatINR(budget)}
+                  <span className="font-mono text-xs text-ivory-text-muted not-italic font-normal">
+                    ({formatINRFull(budget)})
+                  </span>
                 </span>
-                <span>MAX: $150,000+</span>
+                <span>MAX: ₹1.5 Cr+</span>
               </div>
               <input
                 type="range"
-                min="20000"
-                max="150000"
-                step="2500"
+                min="1500000"
+                max="15000000"
+                step="250000"
                 value={budget}
                 onChange={e => setBudget(Number(e.target.value))}
                 className="w-full h-1 bg-[#e8e2dc] rounded-lg appearance-none cursor-pointer accent-brand"
               />
               <div className="flex gap-2 justify-center pt-2">
-                {[30000, 50000, 80000, 120000].map(preset => (
+                {[2500000, 4500000, 7500000, 12000000].map(preset => (
                   <button
                     key={preset}
                     onClick={() => setBudget(preset)}
@@ -115,7 +118,7 @@ export default function TelemetryQuiz({ onComplete }: TelemetryQuizProps) {
                         : 'border-ivory-border text-ivory-text-muted hover:border-brand/40 hover:text-foreground'
                     }`}
                   >
-                    ${(preset / 1000).toFixed(0)}k
+                    {formatINR(preset)}
                   </button>
                 ))}
               </div>
