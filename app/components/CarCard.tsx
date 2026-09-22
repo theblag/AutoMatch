@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Car, UserPreferences, formatINR, formatINRFull } from '../data/cars';
-import RadarMetric from './RadarMetric';
+import React, { useState } from "react";
+import { Car, UserPreferences, formatINR, formatINRFull } from "../data/cars";
+import RadarMetric from "./RadarMetric";
 
 interface CarCardProps {
   car: Car;
   matchPercentage: number;
-  userMetrics?: UserPreferences['metrics'];
+  userMetrics?: UserPreferences["metrics"];
   isCompared: boolean;
   onCompareToggle: () => void;
   compareCount: number;
@@ -19,69 +19,239 @@ export default function CarCard({
   userMetrics,
   isCompared,
   onCompareToggle,
-  compareCount
+  compareCount,
 }: CarCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   // SVG Silhouettes representing different body styles (Refined Sketch Style)
-  const renderSilhouette = (type: Car['type']) => {
-    const strokeColor = '#706a62';
-    const wheelFill = '#fcfbfa';
-    const groundColor = '#e8e2dc';
-    
+  const renderSilhouette = (type: Car["type"]) => {
+    const strokeColor = "#706a62";
+    const wheelFill = "#fcfbfa";
+    const groundColor = "#e8e2dc";
+
     switch (type) {
-      case 'SUV':
+      case "SUV":
         return (
-          <svg viewBox="0 0 120 40" className="w-full h-12 stroke-[1.2] fill-none" style={{ stroke: strokeColor }}>
+          <svg
+            viewBox="0 0 120 40"
+            className="w-full h-12 stroke-[1.2] fill-none"
+            style={{ stroke: strokeColor }}
+          >
             <path d="M5 28 L15 28 C18 28, 20 25, 22 20 L27 12 C29 9, 32 8, 38 8 L75 8 C80 8, 83 10, 86 14 L95 20 C99 22, 102 24, 110 24 L115 24 L115 28 L110 28" />
-            <circle cx="28" cy="28" r="8" className="stroke-[1.2]" style={{ fill: wheelFill }} />
-            <circle cx="92" cy="28" r="8" className="stroke-[1.2]" style={{ fill: wheelFill }} />
-            <circle cx="28" cy="28" r="2.5" className="fill-brand" style={{ stroke: 'none' }} />
-            <circle cx="92" cy="28" r="2.5" className="fill-brand" style={{ stroke: 'none' }} />
-            <line x1="0" y1="36" x2="120" y2="36" className="stroke-[0.75]" style={{ stroke: groundColor }} />
+            <circle
+              cx="28"
+              cy="28"
+              r="8"
+              className="stroke-[1.2]"
+              style={{ fill: wheelFill }}
+            />
+            <circle
+              cx="92"
+              cy="28"
+              r="8"
+              className="stroke-[1.2]"
+              style={{ fill: wheelFill }}
+            />
+            <circle
+              cx="28"
+              cy="28"
+              r="2.5"
+              className="fill-brand"
+              style={{ stroke: "none" }}
+            />
+            <circle
+              cx="92"
+              cy="28"
+              r="2.5"
+              className="fill-brand"
+              style={{ stroke: "none" }}
+            />
+            <line
+              x1="0"
+              y1="36"
+              x2="120"
+              y2="36"
+              className="stroke-[0.75]"
+              style={{ stroke: groundColor }}
+            />
           </svg>
         );
-      case 'Sedan':
+      case "Sedan":
         return (
-          <svg viewBox="0 0 120 40" className="w-full h-12 stroke-[1.2] fill-none" style={{ stroke: strokeColor }}>
+          <svg
+            viewBox="0 0 120 40"
+            className="w-full h-12 stroke-[1.2] fill-none"
+            style={{ stroke: strokeColor }}
+          >
             <path d="M5 28 L15 28 C18 28, 20 26, 22 23 L28 17 C31 13, 34 12, 40 12 L72 12 C77 12, 80 14, 82 17 L88 23 C90 26, 92 27, 98 27 L110 27 L115 27 L115 28" />
-            <circle cx="28" cy="28" r="8" className="stroke-[1.2]" style={{ fill: wheelFill }} />
-            <circle cx="92" cy="28" r="8" className="stroke-[1.2]" style={{ fill: wheelFill }} />
-            <circle cx="28" cy="28" r="2.5" className="fill-brand" style={{ stroke: 'none' }} />
-            <circle cx="92" cy="28" r="2.5" className="fill-brand" style={{ stroke: 'none' }} />
-            <line x1="0" y1="36" x2="120" y2="36" className="stroke-[0.75]" style={{ stroke: groundColor }} />
+            <circle
+              cx="28"
+              cy="28"
+              r="8"
+              className="stroke-[1.2]"
+              style={{ fill: wheelFill }}
+            />
+            <circle
+              cx="92"
+              cy="28"
+              r="8"
+              className="stroke-[1.2]"
+              style={{ fill: wheelFill }}
+            />
+            <circle
+              cx="28"
+              cy="28"
+              r="2.5"
+              className="fill-brand"
+              style={{ stroke: "none" }}
+            />
+            <circle
+              cx="92"
+              cy="28"
+              r="2.5"
+              className="fill-brand"
+              style={{ stroke: "none" }}
+            />
+            <line
+              x1="0"
+              y1="36"
+              x2="120"
+              y2="36"
+              className="stroke-[0.75]"
+              style={{ stroke: groundColor }}
+            />
           </svg>
         );
-      case 'Coupe':
+      case "Coupe":
         return (
-          <svg viewBox="0 0 120 40" className="w-full h-12 stroke-[1.2] fill-none" style={{ stroke: strokeColor }}>
+          <svg
+            viewBox="0 0 120 40"
+            className="w-full h-12 stroke-[1.2] fill-none"
+            style={{ stroke: strokeColor }}
+          >
             <path d="M5 28 L15 28 C18 28, 21 26, 23 23 L32 15 C35 12, 39 11, 44 11 L68 11 C74 11, 78 13, 81 18 L87 23 C89 26, 91 27, 97 27 L110 27 L115 27" />
-            <circle cx="28" cy="28" r="8" className="stroke-[1.2]" style={{ fill: wheelFill }} />
-            <circle cx="92" cy="28" r="8" className="stroke-[1.2]" style={{ fill: wheelFill }} />
-            <circle cx="28" cy="28" r="2.5" className="fill-brand" style={{ stroke: 'none' }} />
-            <circle cx="92" cy="28" r="2.5" className="fill-brand" style={{ stroke: 'none' }} />
-            <line x1="0" y1="36" x2="120" y2="36" className="stroke-[0.75]" style={{ stroke: groundColor }} />
+            <circle
+              cx="28"
+              cy="28"
+              r="8"
+              className="stroke-[1.2]"
+              style={{ fill: wheelFill }}
+            />
+            <circle
+              cx="92"
+              cy="28"
+              r="8"
+              className="stroke-[1.2]"
+              style={{ fill: wheelFill }}
+            />
+            <circle
+              cx="28"
+              cy="28"
+              r="2.5"
+              className="fill-brand"
+              style={{ stroke: "none" }}
+            />
+            <circle
+              cx="92"
+              cy="28"
+              r="2.5"
+              className="fill-brand"
+              style={{ stroke: "none" }}
+            />
+            <line
+              x1="0"
+              y1="36"
+              x2="120"
+              y2="36"
+              className="stroke-[0.75]"
+              style={{ stroke: groundColor }}
+            />
           </svg>
         );
-      case 'Truck':
+      case "Truck":
         return (
-          <svg viewBox="0 0 120 40" className="w-full h-12 stroke-[1.2] fill-none" style={{ stroke: strokeColor }}>
+          <svg
+            viewBox="0 0 120 40"
+            className="w-full h-12 stroke-[1.2] fill-none"
+            style={{ stroke: strokeColor }}
+          >
             <path d="M5 28 L12 28 C15 28, 17 25, 19 20 L24 12 C26 9, 29 8, 35 8 L65 8 L65 24 L110 24 L115 24 L115 28" />
-            <line x1="65" y1="8" x2="65" y2="24" className="stroke-[0.75]" style={{ stroke: groundColor, strokeDasharray: '2,2' }} />
-            <circle cx="26" cy="28" r="8" className="stroke-[1.2]" style={{ fill: wheelFill }} />
-            <circle cx="92" cy="28" r="8" className="stroke-[1.2]" style={{ fill: wheelFill }} />
-            <circle cx="26" cy="28" r="2.5" className="fill-brand" style={{ stroke: 'none' }} />
-            <circle cx="92" cy="28" r="2.5" className="fill-brand" style={{ stroke: 'none' }} />
-            <line x1="0" y1="36" x2="120" y2="36" className="stroke-[0.75]" style={{ stroke: groundColor }} />
+            <line
+              x1="65"
+              y1="8"
+              x2="65"
+              y2="24"
+              className="stroke-[0.75]"
+              style={{ stroke: groundColor, strokeDasharray: "2,2" }}
+            />
+            <circle
+              cx="26"
+              cy="28"
+              r="8"
+              className="stroke-[1.2]"
+              style={{ fill: wheelFill }}
+            />
+            <circle
+              cx="92"
+              cy="28"
+              r="8"
+              className="stroke-[1.2]"
+              style={{ fill: wheelFill }}
+            />
+            <circle
+              cx="26"
+              cy="28"
+              r="2.5"
+              className="fill-brand"
+              style={{ stroke: "none" }}
+            />
+            <circle
+              cx="92"
+              cy="28"
+              r="2.5"
+              className="fill-brand"
+              style={{ stroke: "none" }}
+            />
+            <line
+              x1="0"
+              y1="36"
+              x2="120"
+              y2="36"
+              className="stroke-[0.75]"
+              style={{ stroke: groundColor }}
+            />
           </svg>
         );
       default:
         return (
-          <svg viewBox="0 0 120 40" className="w-full h-12 stroke-[1.2] fill-none" style={{ stroke: strokeColor }}>
+          <svg
+            viewBox="0 0 120 40"
+            className="w-full h-12 stroke-[1.2] fill-none"
+            style={{ stroke: strokeColor }}
+          >
             <path d="M5 28 L115 28" />
-            <circle cx="28" cy="28" r="8" className="stroke-[1.2]" style={{ fill: wheelFill }} />
-            <circle cx="92" cy="28" r="8" className="stroke-[1.2]" style={{ fill: wheelFill }} />
-            <line x1="0" y1="36" x2="120" y2="36" className="stroke-[0.75]" style={{ stroke: groundColor }} />
+            <circle
+              cx="28"
+              cy="28"
+              r="8"
+              className="stroke-[1.2]"
+              style={{ fill: wheelFill }}
+            />
+            <circle
+              cx="92"
+              cy="28"
+              r="8"
+              className="stroke-[1.2]"
+              style={{ fill: wheelFill }}
+            />
+            <line
+              x1="0"
+              y1="36"
+              x2="120"
+              y2="36"
+              className="stroke-[0.75]"
+              style={{ stroke: groundColor }}
+            />
           </svg>
         );
     }
@@ -94,19 +264,26 @@ export default function CarCard({
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-2.5">
             <span className="font-mono text-[9px] text-brand border border-brand/35 bg-brand/5 px-2 py-0.5 rounded-full uppercase font-semibold">
-              {car.fuelType} {'//'} {car.type}
+              {car.fuelType} {"//"} {car.type}
             </span>
             <span className="font-serif italic text-xs text-ivory-text-muted">
               Model Year {car.year}
             </span>
           </div>
           <h3 className="text-2xl md:text-3xl font-serif text-foreground font-semibold mt-2.5 tracking-tight">
-            {car.make} <span className="text-brand font-normal italic font-serif">{car.model}</span>
+            {car.make}{" "}
+            <span className="text-brand font-normal italic font-serif">
+              {car.model}
+            </span>
           </h3>
           <p className="font-mono text-sm text-foreground font-bold mt-1.5 flex flex-wrap items-baseline gap-1.5">
             <span>{formatINR(car.price)}</span>
-            <span className="text-xs text-ivory-text-muted font-mono font-normal">({formatINRFull(car.price)})</span>
-            <span className="text-[10px] text-ivory-text-muted font-normal italic font-serif">EST. EX-SHOWROOM</span>
+            <span className="text-xs text-ivory-text-muted font-mono font-normal">
+              ({formatINRFull(car.price)})
+            </span>
+            <span className="text-[10px] text-ivory-text-muted font-normal italic font-serif">
+              EST. EX-SHOWROOM
+            </span>
           </p>
         </div>
 
@@ -146,42 +323,62 @@ export default function CarCard({
       <div className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-5 gap-8 items-center flex-1">
         {/* Wireframe Silhouette depiction */}
         <div className="md:col-span-2 flex flex-col justify-between h-full space-y-4">
-          <div className="bg-[#fdfcfb] p-4 rounded-2xl border border-ivory-border/70 flex flex-col justify-center items-center h-28 relative">
+          <div className="bg-ivory-bg p-4 rounded-2xl border border-ivory-border/70 flex flex-col justify-center items-center h-28 relative">
             <div className="absolute top-2 left-3 font-serif italic text-[9px] text-ivory-text-muted">
               Technical Silhouette // Scan Lock
             </div>
             {renderSilhouette(car.type)}
           </div>
-          
+
           {/* Quick Specs Grid */}
           <div className="grid grid-cols-2 gap-2 text-xs">
             <div className="bg-white p-2.5 rounded-xl border border-ivory-border">
-              <span className="block text-[9px] text-ivory-text-muted font-mono uppercase">0-60 MPH</span>
-              <span className="text-foreground font-serif italic font-bold">{car.specs.zeroToSixty}</span>
+              <span className="block text-[9px] text-ivory-text-muted font-mono uppercase">
+                0-60 MPH
+              </span>
+              <span className="text-foreground font-serif italic font-bold">
+                {car.specs.zeroToSixty}
+              </span>
             </div>
             <div className="bg-white p-2.5 rounded-xl border border-ivory-border">
-              <span className="block text-[9px] text-ivory-text-muted font-mono uppercase">POWER</span>
-              <span className="text-foreground font-serif italic font-bold">{car.specs.power}</span>
+              <span className="block text-[9px] text-ivory-text-muted font-mono uppercase">
+                POWER
+              </span>
+              <span className="text-foreground font-serif italic font-bold">
+                {car.specs.power}
+              </span>
             </div>
             <div className="bg-white p-2.5 rounded-xl border border-ivory-border">
-              <span className="block text-[9px] text-ivory-text-muted font-mono uppercase">RANGE / MPG</span>
-              <span className="text-foreground font-serif italic font-bold truncate block">{car.specs.rangeOrMpg}</span>
+              <span className="block text-[9px] text-ivory-text-muted font-mono uppercase">
+                RANGE / MPG
+              </span>
+              <span className="text-foreground font-serif italic font-bold truncate block">
+                {car.specs.rangeOrMpg}
+              </span>
             </div>
             <div className="bg-white p-2.5 rounded-xl border border-ivory-border">
-              <span className="block text-[9px] text-ivory-text-muted font-mono uppercase">CARGO</span>
-              <span className="text-foreground font-serif italic font-bold truncate block">{car.specs.cargoSpace}</span>
+              <span className="block text-[9px] text-ivory-text-muted font-mono uppercase">
+                CARGO
+              </span>
+              <span className="text-foreground font-serif italic font-bold truncate block">
+                {car.specs.cargoSpace}
+              </span>
             </div>
           </div>
         </div>
 
         {/* Telemetry Radar Graphic */}
         <div className="md:col-span-3 flex justify-center">
-          <RadarMetric metrics={car.metrics} userMetrics={userMetrics} size={170} />
+          <RadarMetric
+            metrics={car.metrics}
+            userMetrics={userMetrics}
+            size={170}
+          />
         </div>
       </div>
 
       {/* Tagline / Subtitle */}
-      <div className="px-8 py-3 bg-[#fdfcfb] border-t border-b border-ivory-border">
+      <div className="px-8 py-3 bg-ivory-bg border-t border-b border-ivory-border">
         <p className="text-xs italic text-brand font-medium font-serif">
           &ldquo;{car.tagline}&rdquo;
         </p>
@@ -189,7 +386,7 @@ export default function CarCard({
 
       {/* Expandable Technical Details */}
       {isExpanded && (
-        <div className="p-6 md:p-8 bg-[#fdfcfb] border-t border-ivory-border space-y-5 text-xs">
+        <div className="p-6 md:p-8 bg-ivory-bg border-t border-ivory-border space-y-5 text-xs">
           <div>
             <span className="font-serif italic text-xs text-brand block font-semibold mb-1">
               Curator Analysis
@@ -206,7 +403,9 @@ export default function CarCard({
               </span>
               <ul className="space-y-1 text-foreground/75 list-disc list-inside font-serif">
                 {car.pros.map((pro, idx) => (
-                  <li key={idx} className="leading-snug">{pro}</li>
+                  <li key={idx} className="leading-snug">
+                    {pro}
+                  </li>
                 ))}
               </ul>
             </div>
@@ -217,7 +416,9 @@ export default function CarCard({
               </span>
               <ul className="space-y-1 text-foreground/75 list-disc list-inside font-serif">
                 {car.cons.map((con, idx) => (
-                  <li key={idx} className="leading-snug">{con}</li>
+                  <li key={idx} className="leading-snug">
+                    {con}
+                  </li>
                 ))}
               </ul>
             </div>
@@ -264,8 +465,8 @@ export default function CarCard({
           onClick={onCompareToggle}
           className={`font-mono text-[9px] py-1.5 px-4 rounded-full border transition-all flex items-center gap-1.5 cursor-pointer ${
             isCompared
-              ? 'border-brand bg-brand/5 text-brand font-bold'
-              : 'border-ivory-border text-ivory-text-muted hover:text-foreground hover:border-brand/40'
+              ? "border-brand bg-brand/5 text-brand font-bold"
+              : "border-ivory-border text-ivory-text-muted hover:text-foreground hover:border-brand/40"
           }`}
         >
           {isCompared ? (
@@ -282,7 +483,7 @@ export default function CarCard({
           onClick={() => setIsExpanded(!isExpanded)}
           className="font-serif italic text-xs text-brand hover:text-brand-dark transition-all underline cursor-pointer"
         >
-          {isExpanded ? 'Hide Specifications [-]' : 'View Specifications [+]'}
+          {isExpanded ? "Hide Specifications [-]" : "View Specifications [+]"}
         </button>
       </div>
     </div>
