@@ -1,14 +1,19 @@
-'use client';
+"use client";
 
-import React, { useState, useMemo } from 'react';
-import { getRecommendations, UserPreferences, carsDatabase, formatINR } from './data/cars';
-import TelemetryQuiz from './components/TelemetryQuiz';
-import CarCard from './components/CarCard';
-import CarComparison from './components/CarComparison';
+import React, { useState, useMemo } from "react";
+import {
+  getRecommendations,
+  UserPreferences,
+  carsDatabase,
+  formatINR,
+} from "./data/cars";
+import TelemetryQuiz from "./components/TelemetryQuiz";
+import CarCard from "./components/CarCard";
+import CarComparison from "./components/CarComparison";
 
 export default function Home() {
-  const [view, setView] = useState<'WELCOME' | 'QUIZ' | 'RESULTS'>('WELCOME');
-  
+  const [view, setView] = useState<"WELCOME" | "QUIZ" | "RESULTS">("WELCOME");
+
   // Quiz state
   const [userPrefs, setUserPrefs] = useState<UserPreferences | null>(null);
 
@@ -23,7 +28,7 @@ export default function Home() {
 
   // Launch the quiz
   const handleStartQuiz = () => {
-    setView('QUIZ');
+    setView("QUIZ");
   };
 
   // Complete the quiz
@@ -32,13 +37,13 @@ export default function Home() {
     setActiveBudget(prefs.budget);
     setActiveTypes(prefs.types);
     setActiveFuels(prefs.fuels);
-    setView('RESULTS');
+    setView("RESULTS");
   };
 
   // Re-run recommendation engine when preferences or filter adjustments change
   const recommendations = useMemo(() => {
     if (!userPrefs) return [];
-    
+
     // Merge baseline user preferences with active filter adjustments
     const currentPrefs: UserPreferences = {
       ...userPrefs,
@@ -46,19 +51,21 @@ export default function Home() {
       types: activeTypes,
       fuels: activeFuels,
     };
-    
+
     return getRecommendations(currentPrefs);
   }, [userPrefs, activeBudget, activeTypes, activeFuels]);
 
   // Handle comparison toggles
   const handleCompareToggle = (carId: string) => {
-    setSelectedCompareIds(prev => {
+    setSelectedCompareIds((prev) => {
       if (prev.includes(carId)) {
-        return prev.filter(id => id !== carId);
+        return prev.filter((id) => id !== carId);
       }
       if (prev.length >= 3) {
         // Limit to 3 max
-        alert('You can select a maximum of 3 vehicles for comparative diagnostics.');
+        alert(
+          "You can select a maximum of 3 vehicles for comparative diagnostics.",
+        );
         return prev;
       }
       return [...prev, carId];
@@ -66,30 +73,29 @@ export default function Home() {
   };
 
   const selectedCarsForComparison = useMemo(() => {
-    return carsDatabase.filter(car => selectedCompareIds.includes(car.id));
+    return carsDatabase.filter((car) => selectedCompareIds.includes(car.id));
   }, [selectedCompareIds]);
 
   const handleReset = () => {
     setUserPrefs(null);
     setSelectedCompareIds([]);
-    setView('WELCOME');
+    setView("WELCOME");
   };
 
   const toggleTypeFilter = (type: string) => {
-    setActiveTypes(prev =>
-      prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
+    setActiveTypes((prev) =>
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type],
     );
   };
 
   const toggleFuelFilter = (fuel: string) => {
-    setActiveFuels(prev =>
-      prev.includes(fuel) ? prev.filter(f => f !== fuel) : [...prev, fuel]
+    setActiveFuels((prev) =>
+      prev.includes(fuel) ? prev.filter((f) => f !== fuel) : [...prev, fuel],
     );
   };
 
   return (
     <div className="min-h-screen bg-editorial-pattern text-foreground flex flex-col font-sans select-none">
-      
       {/* Top Editorial Header */}
       <header className="border-b border-ivory-border bg-white/80 backdrop-blur-md sticky top-0 z-40 px-6 py-4 flex justify-between items-center">
         <div className="flex items-center gap-3">
@@ -98,7 +104,11 @@ export default function Home() {
           </div>
           <div>
             <span className="font-serif text-sm font-bold tracking-widest text-foreground uppercase">
-              APEX DRIVE <span className="text-brand font-normal italic font-serif">{'//'}</span> CURATOR
+              AUTOMATCH{" "}
+              <span className="text-brand font-normal italic font-serif">
+                {"//"}
+              </span>{" "}
+              CURATOR
             </span>
           </div>
         </div>
@@ -114,7 +124,7 @@ export default function Home() {
               Engine Online
             </div>
           </div>
-          
+
           {userPrefs && (
             <button
               onClick={handleReset}
@@ -128,8 +138,7 @@ export default function Home() {
 
       {/* Main Panel */}
       <main className="flex-1 flex flex-col justify-center py-12 px-4 md:px-8 max-w-7xl mx-auto w-full">
-        
-        {view === 'WELCOME' && (
+        {view === "WELCOME" && (
           <div className="text-center max-w-2xl mx-auto space-y-8 py-12">
             <div className="inline-block px-4 py-1.5 rounded-full border border-brand/20 bg-brand/5 font-serif text-[10px] text-brand tracking-widest uppercase italic font-bold">
               Sequence Ready
@@ -138,25 +147,35 @@ export default function Home() {
             <div className="space-y-4">
               <h1 className="text-4xl md:text-5xl font-serif font-semibold tracking-tight text-foreground leading-tight">
                 Curate Your <br />
-                <span className="text-brand italic font-serif">Ideal Drive</span>
+                <span className="text-brand italic font-serif">
+                  Ideal Drive
+                </span>
               </h1>
               <p className="text-sm md:text-base text-ivory-text-muted font-serif italic leading-relaxed max-w-lg mx-auto">
-                An algorithm matching mechanical profiles. We weigh vehicle structure, dynamics, energy chemistry, and comfort parameters to surface your perfect automotive match.
+                An algorithm matching mechanical profiles. We weigh vehicle
+                structure, dynamics, energy chemistry, and comfort parameters to
+                surface your perfect automotive match.
               </p>
             </div>
 
             {/* Premium stats cards */}
             <div className="grid grid-cols-3 gap-3 max-w-md mx-auto pt-4 font-serif text-[10px] text-ivory-text-muted italic">
               <div className="bg-white p-3 rounded-2xl border border-ivory-border shadow-sm">
-                <span className="block text-brand font-bold text-base not-italic font-mono mb-0.5">10</span>
+                <span className="block text-brand font-bold text-base not-italic font-mono mb-0.5">
+                  10
+                </span>
                 ARCHITECTURES
               </div>
               <div className="bg-white p-3 rounded-2xl border border-ivory-border shadow-sm">
-                <span className="block text-brand font-bold text-base not-italic font-mono mb-0.5">5-AXIS</span>
+                <span className="block text-brand font-bold text-base not-italic font-mono mb-0.5">
+                  5-AXIS
+                </span>
                 METRIC RADAR
               </div>
               <div className="bg-white p-3 rounded-2xl border border-ivory-border shadow-sm">
-                <span className="block text-brand font-bold text-base not-italic font-mono mb-0.5">0.02s</span>
+                <span className="block text-brand font-bold text-base not-italic font-mono mb-0.5">
+                  0.02s
+                </span>
                 CURATION SPEED
               </div>
             </div>
@@ -172,37 +191,40 @@ export default function Home() {
           </div>
         )}
 
-        {view === 'QUIZ' && (
+        {view === "QUIZ" && (
           <div className="py-6">
             <TelemetryQuiz onComplete={handleQuizComplete} />
           </div>
         )}
 
-        {view === 'RESULTS' && userPrefs && (
+        {view === "RESULTS" && userPrefs && (
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 py-4 items-start">
-            
             {/* Left Filter & Recalibrate Bar */}
             <div className="lg:col-span-1 bg-white p-6 rounded-3xl border border-ivory-border shadow-sm space-y-6">
               <div className="border-b border-ivory-border pb-4">
                 <span className="font-serif italic text-brand text-[10px] font-bold tracking-wider uppercase block">
                   Curation Controls
                 </span>
-                <h3 className="text-sm font-serif font-bold text-foreground mt-0.5">REFINE PARAMETERS</h3>
+                <h3 className="text-sm font-serif font-bold text-foreground mt-0.5">
+                  REFINE PARAMETERS
+                </h3>
               </div>
 
               {/* Budget slider */}
               <div className="space-y-2">
                 <div className="flex justify-between font-serif text-[10px] text-ivory-text-muted">
                   <span>MAX BUDGET</span>
-                  <span className="text-brand font-mono font-bold">{formatINR(activeBudget)}</span>
+                  <span className="text-brand font-mono font-bold">
+                    {formatINR(activeBudget)}
+                  </span>
                 </div>
                 <input
                   type="range"
-                  min="1500000"
+                  min="600000"
                   max="15000000"
                   step="250000"
                   value={activeBudget}
-                  onChange={e => setActiveBudget(Number(e.target.value))}
+                  onChange={(e) => setActiveBudget(Number(e.target.value))}
                   className="w-full h-1 bg-[#e8e2dc] rounded-lg appearance-none cursor-pointer accent-brand"
                 />
               </div>
@@ -213,7 +235,7 @@ export default function Home() {
                   SILHOUETTES
                 </span>
                 <div className="flex flex-wrap lg:flex-col gap-1.5">
-                  {['SUV', 'Sedan', 'Hatchback', 'Coupe', 'Truck'].map(type => {
+                  {["SUV", "Sedan", "Hatchback", "MUV"].map((type) => {
                     const isChecked = activeTypes.includes(type);
                     return (
                       <button
@@ -221,12 +243,12 @@ export default function Home() {
                         onClick={() => toggleTypeFilter(type)}
                         className={`text-left font-serif text-[10px] py-2 px-4 rounded-full border transition-all flex items-center justify-between cursor-pointer ${
                           isChecked
-                            ? 'border-brand bg-brand/5 text-brand font-bold'
-                            : 'border-ivory-border text-ivory-text-muted hover:border-brand/40 hover:text-foreground'
+                            ? "border-brand bg-brand/5 text-brand font-bold"
+                            : "border-ivory-border text-ivory-text-muted hover:border-brand/40 hover:text-foreground"
                         }`}
                       >
                         <span>{type}</span>
-                        <span>{isChecked ? '●' : '○'}</span>
+                        <span>{isChecked ? "●" : "○"}</span>
                       </button>
                     );
                   })}
@@ -239,7 +261,7 @@ export default function Home() {
                   PROPULSION
                 </span>
                 <div className="flex flex-wrap lg:flex-col gap-1.5">
-                  {['Electric', 'Hybrid', 'Gas'].map(fuel => {
+                  {["Electric", "Hybrid", "Petrol", "Diesel"].map((fuel) => {
                     const isChecked = activeFuels.includes(fuel);
                     return (
                       <button
@@ -247,12 +269,12 @@ export default function Home() {
                         onClick={() => toggleFuelFilter(fuel)}
                         className={`text-left font-serif text-[10px] py-2 px-4 rounded-full border transition-all flex items-center justify-between cursor-pointer ${
                           isChecked
-                            ? 'border-brand bg-brand/5 text-brand font-bold'
-                            : 'border-ivory-border text-ivory-text-muted hover:border-brand/40 hover:text-foreground'
+                            ? "border-brand bg-brand/5 text-brand font-bold"
+                            : "border-ivory-border text-ivory-text-muted hover:border-brand/40 hover:text-foreground"
                         }`}
                       >
                         <span>{fuel}</span>
-                        <span>{isChecked ? '●' : '○'}</span>
+                        <span>{isChecked ? "●" : "○"}</span>
                       </button>
                     );
                   })}
@@ -262,7 +284,7 @@ export default function Home() {
               {/* Manual restart button */}
               <div className="pt-4 border-t border-ivory-border">
                 <button
-                  onClick={() => setView('QUIZ')}
+                  onClick={() => setView("QUIZ")}
                   className="w-full font-mono text-[9px] py-2.5 px-4 rounded-full border border-brand text-brand hover:bg-brand/5 text-center font-bold tracking-wide transition-all cursor-pointer"
                 >
                   RE-CALIBRATE SEQUENCE
@@ -272,7 +294,6 @@ export default function Home() {
 
             {/* Right Recommendation List Grid */}
             <div className="lg:col-span-3 space-y-6">
-              
               {/* Telemetry info row */}
               <div className="flex justify-between items-center font-serif italic text-[11px] text-ivory-text-muted bg-white p-4 rounded-2xl border border-ivory-border shadow-sm">
                 <div className="flex items-center gap-1.5">
@@ -280,7 +301,12 @@ export default function Home() {
                   Scanned: {carsDatabase.length} vehicle options
                 </div>
                 <div>
-                  Matched: {recommendations.filter(r => r.matchPercentage >= 70).length} high-accuracy recommendations
+                  Matched:{" "}
+                  {
+                    recommendations.filter((r) => r.matchPercentage >= 70)
+                      .length
+                  }{" "}
+                  high-accuracy recommendations
                 </div>
               </div>
 
@@ -305,7 +331,8 @@ export default function Home() {
                     No architectures matched your parameters
                   </span>
                   <p className="text-xs text-ivory-text-muted font-serif italic max-w-sm mx-auto">
-                    Try adjusting your criteria in the control panel (e.g., increase max budget or select multiple propulsion types).
+                    Try adjusting your criteria in the control panel (e.g.,
+                    increase max budget or select multiple propulsion types).
                   </p>
                 </div>
               )}
@@ -323,12 +350,14 @@ export default function Home() {
                 Compare Matrix //
               </span>
               <div className="flex gap-2">
-                {selectedCarsForComparison.map(car => (
+                {selectedCarsForComparison.map((car) => (
                   <div
                     key={car.id}
-                    className="font-serif italic text-[10px] bg-[#fdfcfb] border border-ivory-border py-1 px-3 rounded-full flex items-center gap-2 text-foreground font-semibold"
+                    className="font-serif italic text-[10px] bg-ivory-bg border border-ivory-border py-1 px-3 rounded-full flex items-center gap-2 text-foreground font-semibold"
                   >
-                    <span>{car.make} {car.model}</span>
+                    <span>
+                      {car.make} {car.model}
+                    </span>
                     <button
                       onClick={() => handleCompareToggle(car.id)}
                       className="text-rose-600 hover:text-rose-500 font-bold cursor-pointer"

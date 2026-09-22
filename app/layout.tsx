@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "APEX DRIVE // AI Car Recommendation Telemetry",
-  description: "Find your ideal vehicle based on performance, efficiency, utility, comfort, and budget telemetry.",
+  title: "AUTOMATCH // AI Car Recommendation Telemetry",
+  description:
+    "Find your ideal vehicle based on performance, efficiency, utility, comfort, and budget telemetry.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
