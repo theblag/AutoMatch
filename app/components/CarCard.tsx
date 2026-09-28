@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Car, UserPreferences, formatINR, formatINRFull } from "../data/cars";
+import Link from "next/link";
+import { Car, UserPreferences, formatINR, formatINRFull } from "../data";
 import RadarMetric from "./RadarMetric";
 
 interface CarCardProps {
@@ -38,6 +39,68 @@ export default function CarCard({
             style={{ stroke: strokeColor }}
           >
             <path d="M5 28 L15 28 C18 28, 20 25, 22 20 L27 12 C29 9, 32 8, 38 8 L75 8 C80 8, 83 10, 86 14 L95 20 C99 22, 102 24, 110 24 L115 24 L115 28 L110 28" />
+            <circle
+              cx="28"
+              cy="28"
+              r="8"
+              className="stroke-[1.2]"
+              style={{ fill: wheelFill }}
+            />
+            <circle
+              cx="92"
+              cy="28"
+              r="8"
+              className="stroke-[1.2]"
+              style={{ fill: wheelFill }}
+            />
+            <circle
+              cx="28"
+              cy="28"
+              r="2.5"
+              className="fill-brand"
+              style={{ stroke: "none" }}
+            />
+            <circle
+              cx="92"
+              cy="28"
+              r="2.5"
+              className="fill-brand"
+              style={{ stroke: "none" }}
+            />
+            <line
+              x1="0"
+              y1="36"
+              x2="120"
+              y2="36"
+              className="stroke-[0.75]"
+              style={{ stroke: groundColor }}
+            />
+          </svg>
+        );
+      case "MUV":
+        return (
+          <svg
+            viewBox="0 0 120 40"
+            className="w-full h-12 stroke-[1.2] fill-none"
+            style={{ stroke: strokeColor }}
+          >
+            <path d="M5 28 L14 28 C18 28, 20 24, 23 17 L27 10 C29 7, 33 6, 39 6 L76 6 C83 6, 87 9, 90 14 L96 22 C99 25, 103 26, 110 26 L115 26 L115 28" />
+            <line
+              x1="42"
+              y1="7"
+              x2="42"
+              y2="22"
+              className="stroke-[0.75]"
+              style={{ stroke: groundColor }}
+            />
+            <line
+              x1="67"
+              y1="7"
+              x2="67"
+              y2="22"
+              className="stroke-[0.75]"
+              style={{ stroke: groundColor }}
+            />
             <circle
               cx="28"
               cy="28"
@@ -267,15 +330,23 @@ export default function CarCard({
               {car.fuelType} {"//"} {car.type}
             </span>
             <span className="font-serif italic text-xs text-ivory-text-muted">
-              Model Year {car.year}
+              {car.variant
+                ? `Variant ${car.variant}`
+                : (car.year ?? "Variant specifications")}
             </span>
           </div>
-          <h3 className="text-2xl md:text-3xl font-serif text-foreground font-semibold mt-2.5 tracking-tight">
-            {car.make}{" "}
-            <span className="text-brand font-normal italic font-serif">
-              {car.model}
-            </span>
-          </h3>
+          <Link
+            href={`/cars/${car.id}`}
+            className="group inline-block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+            aria-label={`View full specifications for ${car.make} ${car.model} ${car.variant}`}
+          >
+            <h3 className="text-2xl md:text-3xl font-serif text-foreground font-semibold mt-2.5 tracking-tight group-hover:text-brand transition-colors">
+              {car.make}{" "}
+              <span className="text-brand font-normal italic font-serif">
+                {car.model}
+              </span>
+            </h3>
+          </Link>
           <p className="font-mono text-sm text-foreground font-bold mt-1.5 flex flex-wrap items-baseline gap-1.5">
             <span>{formatINR(car.price)}</span>
             <span className="text-xs text-ivory-text-muted font-mono font-normal">
@@ -330,14 +401,16 @@ export default function CarCard({
             {renderSilhouette(car.type)}
           </div>
 
-          {/* Quick Specs Grid */}
+          {/* Dataset-backed quick specs */}
           <div className="grid grid-cols-2 gap-2 text-xs">
             <div className="bg-white p-2.5 rounded-xl border border-ivory-border">
               <span className="block text-[9px] text-ivory-text-muted font-mono uppercase">
-                0-60 MPH
+                ENGINE
               </span>
               <span className="text-foreground font-serif italic font-bold">
-                {car.specs.zeroToSixty}
+                {car.datasetSpecs
+                  ? `${car.datasetSpecs.engineCc} cc`
+                  : car.specs.zeroToSixty}
               </span>
             </div>
             <div className="bg-white p-2.5 rounded-xl border border-ivory-border">
@@ -350,7 +423,7 @@ export default function CarCard({
             </div>
             <div className="bg-white p-2.5 rounded-xl border border-ivory-border">
               <span className="block text-[9px] text-ivory-text-muted font-mono uppercase">
-                RANGE / MPG
+                MILEAGE
               </span>
               <span className="text-foreground font-serif italic font-bold truncate block">
                 {car.specs.rangeOrMpg}
@@ -358,10 +431,12 @@ export default function CarCard({
             </div>
             <div className="bg-white p-2.5 rounded-xl border border-ivory-border">
               <span className="block text-[9px] text-ivory-text-muted font-mono uppercase">
-                CARGO
+                SEATS / CARGO
               </span>
               <span className="text-foreground font-serif italic font-bold truncate block">
-                {car.specs.cargoSpace}
+                {car.datasetSpecs
+                  ? `${car.datasetSpecs.seatingCapacity} / ${car.specs.cargoSpace}`
+                  : car.specs.cargoSpace}
               </span>
             </div>
           </div>
@@ -479,12 +554,20 @@ export default function CarCard({
           )}
         </button>
 
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="font-serif italic text-xs text-brand hover:text-brand-dark transition-all underline cursor-pointer"
-        >
-          {isExpanded ? "Hide Specifications [-]" : "View Specifications [+]"}
-        </button>
+        <div className="flex items-center gap-4">
+          <Link
+            href={`/cars/${car.id}`}
+            className="font-serif italic text-xs text-brand hover:text-brand-dark transition-all underline"
+          >
+            Full details
+          </Link>
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="font-serif italic text-xs text-brand hover:text-brand-dark transition-all underline cursor-pointer"
+          >
+            {isExpanded ? "Hide Specifications [-]" : "Quick view [+]"}
+          </button>
+        </div>
       </div>
     </div>
   );

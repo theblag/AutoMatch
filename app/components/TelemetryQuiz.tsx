@@ -1,7 +1,16 @@
 "use client";
 
 import React, { useState } from "react";
-import { UserPreferences, formatINR, formatINRFull } from "../data/cars";
+import {
+  UserPreferences,
+  formatINR,
+  formatINRFull,
+  BUDGET_STEP,
+  fuelTypes,
+  MAX_BUDGET,
+  MIN_BUDGET,
+  vehicleTypes,
+} from "../data";
 
 interface TelemetryQuizProps {
   onComplete: (prefs: UserPreferences) => void;
@@ -19,9 +28,6 @@ export default function TelemetryQuiz({ onComplete }: TelemetryQuizProps) {
     value: 5,
     comfort: 5,
   });
-
-  const bodyStyles = ["SUV", "Sedan", "Hatchback", "MUV"] as const;
-  const fuelTypes = ["Electric", "Hybrid", "Petrol", "Diesel"] as const;
 
   const toggleType = (type: string) => {
     setTypes((prev) =>
@@ -90,20 +96,20 @@ export default function TelemetryQuiz({ onComplete }: TelemetryQuizProps) {
             </p>
             <div className="space-y-5 pt-4">
               <div className="flex justify-between items-end font-mono text-[10px] text-ivory-text-muted">
-                <span>MIN: ₹6 Lakh</span>
+                <span>MIN: {formatINR(MIN_BUDGET)}</span>
                 <span className="text-brand text-xl font-bold font-serif italic flex items-baseline gap-1.5">
                   {formatINR(budget)}
                   <span className="font-mono text-xs text-ivory-text-muted not-italic font-normal">
                     ({formatINRFull(budget)})
                   </span>
                 </span>
-                <span>MAX: ₹1.5 Cr+</span>
+                <span>MAX: {formatINR(MAX_BUDGET)}</span>
               </div>
               <input
                 type="range"
-                min="600000"
-                max="15000000"
-                step="250000"
+                min={MIN_BUDGET}
+                max={MAX_BUDGET}
+                step={BUDGET_STEP}
                 value={budget}
                 onChange={(e) => setBudget(Number(e.target.value))}
                 className="w-full h-1 bg-[#e8e2dc] rounded-lg appearance-none cursor-pointer accent-brand"
@@ -135,7 +141,7 @@ export default function TelemetryQuiz({ onComplete }: TelemetryQuizProps) {
                 Vehicle Silhouette Profile
               </label>
               <div className="flex flex-wrap gap-2">
-                {bodyStyles.map((type) => {
+                {vehicleTypes.map((type) => {
                   const selected = types.includes(type);
                   return (
                     <button

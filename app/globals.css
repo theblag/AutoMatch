@@ -4,14 +4,14 @@
   --color-brand: #b89870;
   --color-brand-dim: rgba(184, 152, 112, 0.08);
   --color-brand-dark: #9b7d57;
-  
+
   --color-ivory-bg: #fdfcfb;
   --color-ivory-card: #ffffff;
   --color-ivory-hover: #f9f7f4;
   --color-ivory-border: #e6dfd7;
   --color-ivory-border-glow: rgba(184, 152, 112, 0.25);
   --color-ivory-text-muted: #706a62;
-  
+
   --font-serif: Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
@@ -22,7 +22,9 @@
 
 body {
   background-color: var(--background);
-  background-image: linear-gradient(rgba(253, 252, 251, 0.78), rgba(253, 252, 251, 0.78)), url('/main bg.png');
+  background-image:
+    linear-gradient(rgba(253, 252, 251, 0.78), rgba(253, 252, 251, 0.78)),
+    url("/main bg.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -34,7 +36,7 @@ body {
 
 /* Elegant Editorial Style */
 .bg-editorial-pattern {
-  background-image: 
+  background-image:
     linear-gradient(to right, rgba(184, 152, 112, 0.03) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(184, 152, 112, 0.03) 1px, transparent 1px);
   background-size: 48px 48px;
@@ -104,4 +106,29 @@ body {
 
 .animate-slideUp {
   animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media print {
+  body {
+    background: #fff;
+    color: #111;
+    overflow: visible;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .specification-section {
+    break-inside: avoid-page;
+  }
+
+  table {
+    break-inside: auto;
+  }
+
+  tr {
+    break-inside: avoid;
+    break-after: auto;
+  }
 }
