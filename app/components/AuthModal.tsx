@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import type { AuthUser, UserVectorData } from "@/lib/types";
 import { neonAuthClient } from "@/lib/neonAuth";
@@ -18,6 +19,7 @@ export default function AuthModal({
   onAuthSuccess,
 }: AuthModalProps) {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const [tab, setTab] = useState<"GOOGLE" | "EMAIL">("GOOGLE");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -32,7 +34,11 @@ export default function AuthModal({
   const [name, setName] = useState("");
   const [isRegisterMode, setIsRegisterMode] = useState(false);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isOpen || !mounted) return null;
 
   // Handle Google Sign In via Neon Auth
   const handleGoogleSignIn = async () => {
@@ -150,8 +156,8 @@ export default function AuthModal({
     );
   }
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="relative w-full max-w-md bg-white border border-ivory-border shadow-2xl rounded-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-ivory-border px-6 py-5 bg-ivory-bg/60">
@@ -286,6 +292,7 @@ export default function AuthModal({
           </form>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

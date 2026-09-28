@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useTransition } from "react";
+import React, { useEffect, useMemo, useState, useCallback, useTransition } from "react";
 import Link from "next/link";
 import {
   carsDatabase,
@@ -161,10 +161,10 @@ export default function RecommendationsView() {
     setPage(0);
   };
 
-  const handleVectorUpdatedFromAuth = (newVector: UserVectorData) => {
+  const handleVectorUpdatedFromAuth = useCallback((newVector: UserVectorData) => {
     setActiveVector(newVector);
     setPage(0);
-  };
+  }, []);
 
   // Central Adaptive Telemetry Handler: shifts active vector & persists to Neon DB
   const handleCarInteraction = async (
@@ -278,6 +278,16 @@ export default function RecommendationsView() {
     (page + 1) * PAGE_SIZE,
   );
 
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    const resultsElement = document.getElementById("catalog-results-top");
+    if (resultsElement) {
+      resultsElement.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      window.scrollTo({ top: 100, behavior: "smooth" });
+    }
+  };
+
   const toggleType = (type: string) => {
     setPage(0);
     setActiveTypes((current) =>
@@ -297,7 +307,11 @@ export default function RecommendationsView() {
   };
 
   return (
-    <main className="min-h-screen bg-editorial-pattern pb-28 text-foreground">
+    <main
+      className={`min-h-screen bg-editorial-pattern text-foreground transition-all duration-300 ${
+        selectedCompareIds.length > 0 ? "pb-36" : "pb-20"
+      }`}
+    >
       {/* Header with Neon DB Auth & Inspector */}
       <header className="sticky top-0 z-30 flex items-center justify-between border-b border-ivory-border bg-white/90 px-5 py-4 backdrop-blur-md md:px-8">
         <div className="flex items-center gap-3">
@@ -422,7 +436,7 @@ export default function RecommendationsView() {
         </aside>
 
         {/* Results Area */}
-        <section className="min-w-0 space-y-5">
+        <section id="catalog-results-top" className="min-w-0 space-y-5 scroll-mt-24">
           {/* Natural Language Search Bar (Feeds telemetry & shifts vector) */}
           <form
             onSubmit={handleSearchSubmit}
@@ -605,65 +619,139 @@ export default function RecommendationsView() {
             </div>
           )}
 
-          {/* Pagination Controls */}
+          {/* Enhanced Numbered Pagination Controls */}
           {pageCount > 1 && (
             <nav
               aria-label="Recommendation pages"
-              className="flex items-center justify-between border-t border-ivory-border pt-4"
+              className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-ivory-border pt-6 pb-6"
             >
-              <button
-                type="button"
-                onClick={() => setPage((current) => Math.max(0, current - 1))}
-                disabled={page === 0}
-                className="border border-ivory-border bg-white px-4 py-2 font-mono text-[10px] uppercase disabled:opacity-40 rounded-lg hover:bg-ivory-bg transition-colors"
-              >
-                Previous
-              </button>
-              <span className="font-mono text-[10px] text-ivory-text-muted">
-                Page {page + 1} of {pageCount} ({vectorResults.length} vehicles)
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handlePageChange(Math.max(0, page - 1))}
+                  disabled={page === 0}
+                  className="border border-ivory-border bg-white px-3.5 py-2 font-mono text-xs font-bold uppercase disabled:opacity-30 rounded-xl hover:bg-ivory-bg transition-colors cursor-pointer disabled:cursor-not-allowed flex items-center gap-1.5"
+                >
+                  <span>←</span>
+                  <span>Previous</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handlePageChange(Math.min(pageCount - 1, page + 1))}
+                  disabled={page >= pageCount - 1}
+                  className="border border-ivory-border bg-white px-3.5 py-2 font-mono text-xs font-bold uppercase disabled:opacity-30 rounded-xl hover:bg-ivory-bg transition-colors cursor-pointer disabled:cursor-not-allowed flex items-center gap-1.5"
+                >
+                  <span>Next</span>
+                  <span>→</span>
+                </button>
+              </div>
+
+              {/* Numbered Page Buttons */}
+              <div className="flex items-center gap-1.5 flex-wrap justify-center">
+                {Array.from({ length: pageCount })
+                  .map((_, i) => i)
+                  .filter((i) => i === 0 || i === pageCount - 1 || Math.abs(i - page) <= 1)
+                  .map((i, idx, arr) => {
+                    const prev = arr[idx - 1];
+                    const hasGap = prev !== undefined && i - prev > 1;
+                    return (
+                      <React.Fragment key={i}>
+                        {hasGap && (
+                          <span className="font-mono text-xs text-ivory-text-muted px-1 select-none">
+                            ...
+                          </span>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => handlePageChange(i)}
+                          className={`h-8 min-w-[32px] px-2 font-mono text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                            page === i
+                              ? "bg-brand text-white shadow-2xs"
+                              : "bg-white border border-ivory-border text-foreground hover:bg-ivory-bg"
+                          }`}
+                        >
+                          {i + 1}
+                        </button>
+                      </React.Fragment>
+                    );
+                  })}
+              </div>
+
+              <span className="font-mono text-xs text-ivory-text-muted">
+                Showing {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, displayedResults.length)} of {displayedResults.length}
               </span>
-              <button
-                type="button"
-                onClick={() =>
-                  setPage((current) => Math.min(pageCount - 1, current + 1))
-                }
-                disabled={page >= pageCount - 1}
-                className="border border-ivory-border bg-white px-4 py-2 font-mono text-[10px] uppercase disabled:opacity-40 rounded-lg hover:bg-ivory-bg transition-colors"
-              >
-                Next
-              </button>
             </nav>
           )}
         </section>
       </div>
 
-      {/* Comparison Drawer */}
+      {/* Floating Comparison Dock */}
       {selectedCompareIds.length > 0 && (
-        <div className="no-print fixed inset-x-0 bottom-0 z-40 border-t border-ivory-border bg-white p-4 shadow-[0_-10px_30px_rgba(200,190,175,0.15)]">
-          <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
-            <p className="font-serif text-xs italic text-brand">
-              {selectedCars
-                .map((car) => `${car.make} ${car.model} ${car.variant}`)
-                .join(" · ")}
-            </p>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => setSelectedCompareIds([])}
-                className="px-3 py-2 font-mono text-[9px] text-ivory-text-muted"
-              >
-                Clear
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsCompareOpen(true)}
-                className="bg-brand px-4 py-2 font-mono text-[9px] font-bold text-white rounded-lg hover:bg-brand-dark"
-              >
-                Compare ({selectedCompareIds.length})
-              </button>
+        <aside
+          aria-label="Vehicle comparison dock"
+          className="no-print fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[95vw] max-w-4xl bg-neutral-900/95 backdrop-blur-xl text-white border border-neutral-700/80 shadow-[0_20px_60px_rgba(0,0,0,0.45)] rounded-2xl px-4 sm:px-6 py-3.5 flex flex-col md:flex-row items-center justify-between gap-3.5 animate-in fade-in slide-in-from-bottom-5 duration-300 ring-1 ring-white/10"
+        >
+          {/* Selected Vehicle Chips */}
+          <div className="flex items-center gap-2.5 min-w-0 flex-1 overflow-x-auto w-full md:w-auto py-0.5 scrollbar-thin">
+            <div className="flex items-center gap-1.5 shrink-0 pr-1">
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+              <span className="font-mono text-[10px] uppercase font-bold tracking-wider text-amber-400">
+                Compare:
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2 flex-wrap md:flex-nowrap">
+              {selectedCars.map((car) => (
+                <div
+                  key={car.id}
+                  className="inline-flex items-center gap-2 px-3 py-1.5 bg-neutral-800/95 border border-neutral-700 hover:border-amber-400/50 rounded-xl font-serif text-xs text-neutral-100 shrink-0 shadow-xs transition-colors"
+                >
+                  <span className="truncate max-w-[130px] sm:max-w-[170px] font-medium">
+                    {car.make} {car.model}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => toggleCompare(car.id)}
+                    className="text-neutral-400 hover:text-rose-400 font-mono text-xs hover:bg-neutral-700/60 rounded p-0.5 transition-colors cursor-pointer"
+                    title={`Remove ${car.make} ${car.model}`}
+                    aria-label={`Remove ${car.make} ${car.model}`}
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+
+              {selectedCars.length < 3 && (
+                <span className="font-mono text-[10px] text-neutral-400/80 italic shrink-0 px-2.5 py-1 border border-dashed border-neutral-700/80 rounded-xl">
+                  + Add {3 - selectedCars.length} more
+                </span>
+              )}
             </div>
           </div>
-        </div>
+
+          {/* Action Controls */}
+          <div className="flex items-center gap-3 shrink-0 self-end md:self-center">
+            <button
+              type="button"
+              onClick={() => setSelectedCompareIds([])}
+              className="text-xs font-mono text-neutral-400 hover:text-white underline underline-offset-4 decoration-neutral-600 hover:decoration-white transition-colors cursor-pointer px-1 py-1"
+            >
+              Clear All
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsCompareOpen(true)}
+              className="bg-brand hover:bg-brand-dark text-white px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-[0_4px_16px_rgba(184,152,112,0.3)] hover:shadow-[0_6px_20px_rgba(184,152,112,0.4)] hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex items-center gap-2"
+            >
+              <span>Compare Matrix</span>
+              <span className="bg-white/20 text-white px-2 py-0.5 rounded-full text-[10px] font-mono">
+                {selectedCars.length}/3
+              </span>
+              <span>→</span>
+            </button>
+          </div>
+        </aside>
       )}
 
       {isCompareOpen && (

@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import type { AuthUser, UserVectorData } from "@/lib/types";
 
 interface VectorDiagnosticsDrawerProps {
@@ -20,7 +21,23 @@ export default function VectorDiagnosticsDrawer({
   interactionCount,
   recentSearches,
 }: VectorDiagnosticsDrawerProps) {
-  if (!isOpen) return null;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isOpen || !mounted) return null;
+
+  const activeVec = vector || {
+    affordability: 0.6,
+    familySafety: 0.6,
+    terrainClearance: 0.6,
+    urbanAgility: 0.6,
+    performancePower: 0.6,
+    fuelEfficiency: 0.6,
+    techComfort: 0.6,
+  };
 
   const dimensions: { key: keyof UserVectorData; label: string; desc: string }[] = [
     {
@@ -60,8 +77,8 @@ export default function VectorDiagnosticsDrawer({
     },
   ];
 
-  return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-black/50 backdrop-blur-xs flex justify-end">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] overflow-hidden bg-black/60 backdrop-blur-sm flex justify-end">
       <div className="w-full max-w-md bg-white border-l border-ivory-border shadow-2xl h-full flex flex-col overflow-y-auto animate-in slide-in-from-right duration-300">
         {/* Header */}
         <div className="p-6 border-b border-ivory-border bg-ivory-bg/60 flex items-center justify-between sticky top-0 z-10 backdrop-blur-md">
@@ -123,36 +140,30 @@ export default function VectorDiagnosticsDrawer({
               </span>
             </div>
 
-            {vector ? (
-              <div className="space-y-3">
-                {dimensions.map(({ key, label, desc }) => {
-                  const val = vector[key] ?? 0.5;
-                  const pct = Math.round(val * 100);
+            <div className="space-y-3">
+              {dimensions.map(({ key, label, desc }) => {
+                const val = activeVec[key] ?? 0.5;
+                const pct = Math.round(val * 100);
 
-                  return (
-                    <div key={key} className="space-y-1">
-                      <div className="flex justify-between text-xs">
-                        <span className="font-medium text-foreground">{label}</span>
-                        <span className="font-mono text-brand font-bold">
-                          {val.toFixed(2)} ({pct}%)
-                        </span>
-                      </div>
-                      <div className="w-full bg-ivory-border/50 h-2 rounded-full overflow-hidden">
-                        <div
-                          className="bg-brand h-full rounded-full transition-all duration-500"
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                      <p className="text-[10px] text-ivory-text-muted">{desc}</p>
+                return (
+                  <div key={key} className="space-y-1">
+                    <div className="flex justify-between text-xs">
+                      <span className="font-medium text-foreground">{label}</span>
+                      <span className="font-mono text-brand font-bold">
+                        {val.toFixed(2)} ({pct}%)
+                      </span>
                     </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <p className="text-xs text-ivory-text-muted italic">
-                Sign in to view user vector coordinates from Neon DB.
-              </p>
-            )}
+                    <div className="w-full bg-ivory-border/50 h-2 rounded-full overflow-hidden">
+                      <div
+                        className="bg-brand h-full rounded-full transition-all duration-500"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                    <p className="text-[10px] text-ivory-text-muted">{desc}</p>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {/* Persistent Search History from Neon DB */}
@@ -204,6 +215,7 @@ export default function VectorDiagnosticsDrawer({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import type { AuthUser, UserVectorData } from "@/lib/types";
 
 interface OnboardingModalProps {
@@ -34,8 +35,13 @@ export default function OnboardingModal({
     | "Rural / Rough Roads"
   >((user?.primaryUsage as any) || "Family Road Trips");
   const [budgetMax, setBudgetMax] = useState(user?.budgetMax || 2500000);
+  const [mounted, setMounted] = useState(false);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isOpen || !mounted) return null;
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -69,8 +75,8 @@ export default function OnboardingModal({
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="relative w-full max-w-lg bg-white border border-ivory-border shadow-2xl rounded-2xl flex flex-col max-h-[92vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
         <div className="p-6 border-b border-ivory-border bg-ivory-bg/60 shrink-0">
@@ -223,6 +229,7 @@ export default function OnboardingModal({
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
