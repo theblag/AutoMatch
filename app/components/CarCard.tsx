@@ -8,19 +8,31 @@ import RadarMetric from "./RadarMetric";
 interface CarCardProps {
   car: Car;
   matchPercentage: number;
+  explanationBadges?: {
+    title: string;
+    description: string;
+    impact: "high" | "medium";
+  }[];
   userMetrics?: UserPreferences["metrics"];
   isCompared: boolean;
   onCompareToggle: () => void;
   compareCount: number;
+  isShortlisted?: boolean;
+  onShortlistToggle?: () => void;
+  onViewSpecs?: () => void;
 }
 
 export default function CarCard({
   car,
   matchPercentage,
+  explanationBadges,
   userMetrics,
   isCompared,
   onCompareToggle,
   compareCount,
+  isShortlisted,
+  onShortlistToggle,
+  onViewSpecs,
 }: CarCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -335,18 +347,42 @@ export default function CarCard({
                 : (car.year ?? "Variant specifications")}
             </span>
           </div>
-          <Link
-            href={`/cars/${car.id}`}
-            className="group inline-block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
-            aria-label={`View full specifications for ${car.make} ${car.model} ${car.variant}`}
-          >
-            <h3 className="text-2xl md:text-3xl font-serif text-foreground font-semibold mt-2.5 tracking-tight group-hover:text-brand transition-colors">
-              {car.make}{" "}
-              <span className="text-brand font-normal italic font-serif">
-                {car.model}
-              </span>
-            </h3>
-          </Link>
+          <div className="flex items-center justify-between gap-3 mt-2.5">
+            <Link
+              href={`/cars/${car.id}`}
+              className="group inline-block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+              aria-label={`View full specifications for ${car.make} ${car.model} ${car.variant}`}
+            >
+              <h3 className="text-2xl md:text-3xl font-serif text-foreground font-semibold tracking-tight group-hover:text-brand transition-colors">
+                {car.make}{" "}
+                <span className="text-brand font-normal italic font-serif">
+                  {car.model}
+                </span>
+              </h3>
+            </Link>
+
+            {onShortlistToggle && (
+              <button
+                type="button"
+                onClick={onShortlistToggle}
+                title={
+                  isShortlisted
+                    ? "Remove from starred"
+                    : "Star this car (saves to profile in Neon DB & tunes AI vector)"
+                }
+                className={`px-3 py-1 rounded-full text-xs font-mono font-semibold transition-all flex items-center gap-1.5 cursor-pointer shrink-0 ${
+                  isShortlisted
+                    ? "bg-amber-50 text-amber-700 border border-amber-300 shadow-2xs font-bold"
+                    : "bg-ivory-bg text-ivory-text-muted hover:text-amber-600 hover:border-amber-300 border border-ivory-border"
+                }`}
+              >
+                <span className="text-sm">{isShortlisted ? "★" : "☆"}</span>
+                <span className="hidden sm:inline">
+                  {isShortlisted ? "Starred" : "Star"}
+                </span>
+              </button>
+            )}
+          </div>
           <p className="font-mono text-sm text-foreground font-bold mt-1.5 flex flex-wrap items-baseline gap-1.5">
             <span>{formatINR(car.price)}</span>
             <span className="text-xs text-ivory-text-muted font-mono font-normal">
@@ -389,6 +425,24 @@ export default function CarCard({
           </span>
         </div>
       </div>
+
+      {/* SHAP-Style Feature Explainability Attribution Badges */}
+      {explanationBadges && explanationBadges.length > 0 && (
+        <div className="px-6 md:px-8 py-2.5 bg-brand/[0.04] border-b border-ivory-border/70 flex flex-wrap gap-2 items-center">
+          <span className="font-mono text-[9px] uppercase tracking-wider text-brand font-bold flex items-center gap-1">
+            ✦ AI ATTRIBUTION:
+          </span>
+          {explanationBadges.map((badge, idx) => (
+            <span
+              key={idx}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-sans bg-white border border-ivory-border text-foreground shadow-2xs"
+            >
+              <strong className="text-brand font-semibold">{badge.title}:</strong>
+              <span className="text-ivory-text-muted">{badge.description}</span>
+            </span>
+          ))}
+        </div>
+      )}
 
       {/* Main stats layout */}
       <div className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-5 gap-8 items-center flex-1">
@@ -562,7 +616,13 @@ export default function CarCard({
             Full details
           </Link>
           <button
-            onClick={() => setIsExpanded(!isExpanded)}
+            onClick={() => {
+              const next = !isExpanded;
+              setIsExpanded(next);
+              if (next && onViewSpecs) {
+                onViewSpecs();
+              }
+            }}
             className="font-serif italic text-xs text-brand hover:text-brand-dark transition-all underline cursor-pointer"
           >
             {isExpanded ? "Hide Specifications [-]" : "Quick view [+]"}
