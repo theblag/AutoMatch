@@ -5,25 +5,25 @@
   --color-brand-dim: rgba(184, 152, 112, 0.08);
   --color-brand-dark: #9b7d57;
 
-  --color-ivory-bg: #fdfcfb;
-  --color-ivory-card: #ffffff;
-  --color-ivory-hover: #f9f7f4;
-  --color-ivory-border: #e6dfd7;
+  --color-ivory-bg: #ebe5d9;
+  --color-ivory-card: #f7f4f0;
+  --color-ivory-hover: #e5dfd2;
+  --color-ivory-border: #cfc4b8;
   --color-ivory-border-glow: rgba(184, 152, 112, 0.25);
-  --color-ivory-text-muted: #706a62;
+  --color-ivory-text-muted: #5a5249;
 
   --font-serif: Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
 :root {
-  --background: #fdfcfb;
+  --background: #ebe5d9;
   --foreground: #201e1c;
 }
 
 body {
   background-color: var(--background);
   background-image:
-    linear-gradient(rgba(253, 252, 251, 0.78), rgba(253, 252, 251, 0.78)),
+    linear-gradient(rgba(235, 229, 217, 0.78), rgba(235, 229, 217, 0.78)),
     url("/main bg.png");
   background-size: cover;
   background-position: center;
@@ -69,11 +69,11 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #fdfcfb;
+  background: #ebe5d9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #e6dfd7;
+  background: #cfc4b8;
   border-radius: 3px;
 }
 

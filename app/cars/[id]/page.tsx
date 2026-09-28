@@ -31,7 +31,7 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
           href="/recommendations"
           className="font-serif text-sm font-bold uppercase tracking-[0.16em] text-foreground"
         >
-          AUTOMATCH <span className="italic text-brand">{"//"}</span> CURATOR
+          AUTOMATCH 
         </Link>
         <div className="flex items-center gap-4">
           <Link

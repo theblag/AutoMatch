@@ -134,7 +134,7 @@ export default function OnboardingModal({
               <select
                 value={maritalStatus}
                 onChange={(e) => setMaritalStatus(e.target.value as any)}
-                className="w-full px-2 py-1.5 text-xs border border-ivory-border rounded-md bg-ivory-bg/50 focus:outline-brand"
+                className="w-full px-2 py-1.5 text-xs border-2 border-ivory-border rounded-md bg-white focus:outline-brand focus:border-brand"
               >
                 <option value="Single">Single (Compact & Fun)</option>
                 <option value="Married">Married (Couple Travel)</option>
@@ -156,7 +156,7 @@ export default function OnboardingModal({
               <select
                 value={locationType}
                 onChange={(e) => setLocationType(e.target.value as any)}
-                className="w-full px-2 py-1.5 text-xs border border-ivory-border rounded-md bg-ivory-bg/50 focus:outline-brand"
+                className="w-full px-2 py-1.5 text-xs border-2 border-ivory-border rounded-md bg-white focus:outline-brand focus:border-brand"
               >
                 <option value="Metro / City">
                   Metro (City Traffic / Automatic)
@@ -177,7 +177,7 @@ export default function OnboardingModal({
               <select
                 value={primaryUsage}
                 onChange={(e) => setPrimaryUsage(e.target.value as any)}
-                className="w-full px-2 py-1.5 text-xs border border-ivory-border rounded-md bg-ivory-bg/50 focus:outline-brand"
+                className="w-full px-2 py-1.5 text-xs border-2 border-ivory-border rounded-md bg-white focus:outline-brand focus:border-brand"
               >
                 <option value="Daily Commute">
                   Daily Commute (Efficiency)

@@ -319,7 +319,7 @@ export default function RecommendationsView() {
             href="/"
             className="font-serif text-sm font-bold uppercase tracking-[0.16em]"
           >
-            AUTOMATCH <span className="italic text-brand">{"//"}</span> CURATOR
+            AUTOMATCH 
           </Link>
           <span className="hidden font-mono text-[9px] uppercase tracking-wider text-ivory-text-muted md:inline-block">
             {carsDatabase.length.toLocaleString("en-IN")} real vehicles
@@ -448,8 +448,7 @@ export default function RecommendationsView() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search brand, model, or capability (e.g. 'Tata', 'Creta', 'hybrid SUV', 'sunroof')..."
-                className="w-full px-4 py-2.5 text-xs border border-ivory-border rounded-xl focus:outline-brand bg-ivory-bg/30 font-sans pr-8"
-              />
+                className="w-full px-4 py-2.5 text-xs border-2 border-ivory-border rounded-xl focus:outline-brand focus:border-brand bg-white font-sans pr-8\"              />
               {searchQuery && (
                 <button
                   type="button"

@@ -33,7 +33,7 @@ export default function Home() {
       <header className="sticky top-0 z-40 flex items-center justify-between border-b border-ivory-border bg-white/85 px-6 py-4 backdrop-blur-md">
         <div className="flex items-center gap-3">
           <span className="font-serif text-sm font-bold uppercase tracking-widest">
-            AUTOMATCH <span className="italic text-brand">{"//"}</span> CURATOR
+            AUTOMATCH
           </span>
           <span className="hidden font-mono text-[9px] uppercase tracking-wider text-ivory-text-muted sm:block">
             {carsDatabase.length.toLocaleString("en-IN")} catalog variants

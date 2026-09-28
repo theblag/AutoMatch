@@ -239,7 +239,7 @@ export default function AuthModal({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Your Name"
-                  className="w-full px-3 py-2 text-sm border border-ivory-border rounded-lg bg-ivory-bg/30 focus:outline-brand"
+                  className="w-full px-3 py-2 text-sm border-2 border-ivory-border rounded-lg bg-white focus:outline-brand focus:border-brand"
                 />
               </div>
             )}
@@ -253,7 +253,7 @@ export default function AuthModal({
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@example.com"
-                className="w-full px-3 py-2 text-sm border border-ivory-border rounded-lg bg-ivory-bg/30 focus:outline-brand"
+                className="w-full px-3 py-2 text-sm border-2 border-ivory-border rounded-lg bg-white focus:outline-brand focus:border-brand"
               />
             </div>
 
@@ -267,7 +267,7 @@ export default function AuthModal({
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter password"
-                className="w-full px-3 py-2 text-sm border border-ivory-border rounded-lg bg-ivory-bg/30 focus:outline-brand"
+                className="w-full px-3 py-2 text-sm border-2 border-ivory-border rounded-lg bg-white focus:outline-brand focus:border-brand"
               />
             </div>
 
