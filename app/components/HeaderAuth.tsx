@@ -34,6 +34,9 @@ export default function HeaderAuth({ onVectorUpdated }: HeaderAuthProps) {
           if (data.needsProfileSetup) {
             setIsOnboardingOpen(true);
           }
+          if (onVectorUpdated && data.vector) {
+            onVectorUpdated(data.vector);
+          }
         }
       } catch (err) {
         console.error("Failed to load session:", err);
@@ -42,7 +45,7 @@ export default function HeaderAuth({ onVectorUpdated }: HeaderAuthProps) {
       }
     }
     loadSession();
-  }, []);
+  }, [onVectorUpdated]);
 
   const handleAuthSuccess = (newUser: AuthUser, newVector: UserVectorData) => {
     setUser(newUser);
@@ -98,7 +101,7 @@ export default function HeaderAuth({ onVectorUpdated }: HeaderAuthProps) {
                 setInteractionCount(data.interactionCount || 0);
                 setRecentSearches(data.recentSearches || []);
               }
-            } catch {}
+            } catch { }
             setIsDrawerOpen(true);
           }}
           className="flex items-center gap-2 px-3 py-1.5 bg-brand/10 border border-brand/30 hover:bg-brand/20 text-brand text-xs font-mono font-bold rounded-lg transition-all shadow-xs"
@@ -139,7 +142,7 @@ export default function HeaderAuth({ onVectorUpdated }: HeaderAuthProps) {
           <button
             type="button"
             onClick={() => setIsAuthModalOpen(true)}
-            className="px-4 py-1.5 bg-foreground text-white hover:bg-brand text-xs font-mono font-bold uppercase tracking-wider rounded-lg transition-colors flex items-center gap-1.5"
+            className="px-4 py-1.5 bg-brand text-white font-mono font-bold uppercase tracking-wider rounded-lg transition-all flex items-center gap-1.5 shadow-md hover:shadow-lg hover:scale-105 border border-brand hover:bg-brand/95 text-xs"
           >
             <span>Sign In</span>
           </button>

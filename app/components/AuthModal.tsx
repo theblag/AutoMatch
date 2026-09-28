@@ -111,15 +111,14 @@ export default function AuthModal({
         throw new Error(syncData.error || "Failed to sync user profile.");
       }
 
-      // If user hasn't set their lifestyle priors yet, prompt the one-time questionnaire
-      if (syncData.needsProfileSetup) {
-        onClose();
-        router.push("/onboarding");
-      } else {
-        if (onAuthSuccess) {
-          onAuthSuccess(syncData.user, syncData.vector);
-        }
-        onClose();
+      // Notify parent immediately so user state is established and onboarding opens
+      if (onAuthSuccess) {
+        onAuthSuccess(syncData.user, syncData.vector);
+      }
+      onClose();
+
+      // If user profile is already completed, ensure we navigate to recommendations
+      if (!syncData.needsProfileSetup) {
         router.push("/recommendations");
       }
     } catch (err: any) {

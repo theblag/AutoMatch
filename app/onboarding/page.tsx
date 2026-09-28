@@ -37,11 +37,18 @@ export default function OnboardingPage() {
   useEffect(() => {
     async function checkAuth() {
       try {
-        const res = await fetch("/api/auth/me");
-        const data = await res.json();
+        let res = await fetch("/api/auth/me");
+        let data = await res.json();
+
+        // If not authenticated immediately, retry once after 350ms to allow session cookies to flush
+        if (!data.authenticated || !data.user) {
+          await new Promise((resolve) => setTimeout(resolve, 350));
+          res = await fetch("/api/auth/me");
+          data = await res.json();
+        }
 
         if (!data.authenticated || !data.user) {
-          // If not logged in, redirect to home to sign in first
+          // If still not logged in, redirect to home to sign in first
           router.push("/");
           return;
         }

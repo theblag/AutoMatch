@@ -40,10 +40,10 @@ export default function AuthCallbackPage() {
         // 3. Check if user needs first-time lifestyle calibration
         if (syncData.needsProfileSetup) {
           setStatus("First-time login detected. Redirecting to lifestyle calibration...");
-          router.push("/onboarding");
+          window.location.href = "/onboarding";
         } else {
           setStatus("Profile verified! Loading recommendations...");
-          router.push("/recommendations");
+          window.location.href = "/recommendations";
         }
       } catch (err: any) {
         console.error("Auth callback error:", err);

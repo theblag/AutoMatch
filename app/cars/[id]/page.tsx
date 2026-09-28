@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { carsDatabase, formatINR, formatINRFull } from "../../data";
 import PrintSpecificationsButton from "../../components/PrintSpecificationsButton";
+import SpecificationTooltip from "../../components/SpecificationTooltip";
 
 interface CarDetailsPageProps {
   params: Promise<{ id: string }>;
@@ -59,13 +60,13 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
             </p>
           </div>
           <div className="border-l-2 border-brand pl-5 md:min-w-56">
-            <p className="font-mono text-[9px] uppercase tracking-widest text-ivory-text-muted">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-foreground/70 font-semibold">
               Ex-showroom price
             </p>
             <p className="mt-1 font-serif text-3xl font-bold text-foreground">
               {formatINR(car.price)}
             </p>
-            <p className="font-mono text-xs text-ivory-text-muted">
+            <p className="font-mono text-xs text-foreground/60">
               {formatINRFull(car.price)}
             </p>
           </div>
@@ -107,14 +108,14 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
                 <h2 className="font-serif text-xl font-semibold">
                   {section.title}
                 </h2>
-                <span className="font-mono text-[9px] text-ivory-text-muted">
+                <span className="font-mono text-[10px] font-semibold text-foreground/60">
                   {section.fields.length} specifications
                 </span>
               </div>
               <div className="overflow-x-auto border border-ivory-border bg-white">
                 <table className="w-full border-collapse text-left text-sm">
                   <thead>
-                    <tr className="border-b border-ivory-border bg-ivory-hover font-mono text-[9px] uppercase tracking-wider text-ivory-text-muted">
+                    <tr className="border-b border-ivory-border bg-ivory-hover font-mono text-[10px] uppercase tracking-wider text-foreground/70 font-semibold">
                       <th scope="col" className="px-4 py-3 font-medium">
                         Specification
                       </th>
@@ -131,9 +132,9 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
                       >
                         <th
                           scope="row"
-                          className="w-1/2 px-4 py-3 text-left font-serif font-normal text-ivory-text-muted"
+                          className="w-1/2 px-4 py-3 text-left font-serif font-normal text-foreground/75"
                         >
-                          {field.label}
+                          <SpecificationTooltip specName={field.label} />
                         </th>
                         <td className="px-4 py-3 font-serif font-semibold text-foreground">
                           {field.value}
@@ -147,7 +148,7 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
           ))}
         </div>
 
-        <p className="mt-8 border-t border-ivory-border pt-4 font-mono text-[9px] uppercase tracking-wider text-ivory-text-muted">
+        <p className="mt-8 border-t border-ivory-border pt-4 font-mono text-[10px] uppercase tracking-wider text-foreground/60 font-semibold">
           Specifications are shown as recorded in the supplied vehicle dataset.
           Empty source fields are omitted.
         </p>
