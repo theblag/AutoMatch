@@ -34,6 +34,9 @@ export default function HeaderAuth({ onVectorUpdated }: HeaderAuthProps) {
           if (data.needsProfileSetup) {
             setIsOnboardingOpen(true);
           }
+          if (onVectorUpdated && data.vector) {
+            onVectorUpdated(data.vector);
+          }
         }
       } catch (err) {
         console.error("Failed to load session:", err);
@@ -42,7 +45,7 @@ export default function HeaderAuth({ onVectorUpdated }: HeaderAuthProps) {
       }
     }
     loadSession();
-  }, []);
+  }, [onVectorUpdated]);
 
   const handleAuthSuccess = (newUser: AuthUser, newVector: UserVectorData) => {
     setUser(newUser);
@@ -98,7 +101,7 @@ export default function HeaderAuth({ onVectorUpdated }: HeaderAuthProps) {
                 setInteractionCount(data.interactionCount || 0);
                 setRecentSearches(data.recentSearches || []);
               }
-            } catch {}
+            } catch { }
             setIsDrawerOpen(true);
           }}
           className="flex items-center gap-2 px-3 py-1.5 bg-brand/10 border border-brand/30 hover:bg-brand/20 text-brand text-xs font-mono font-bold rounded-lg transition-all shadow-xs"
