@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Car, formatINR, formatINRFull } from "../data/cars";
+import { Car, formatINR, formatINRFull } from "../data";
 
 interface CarComparisonProps {
   selectedCars: Car[];
@@ -18,35 +18,81 @@ export default function CarComparison({
 
   interface SpecsRow {
     label: string;
-    key: string;
-    path?: readonly string[];
-    format?: (val: number) => string;
+    value: (car: Car) => string;
   }
 
   const specsRows: readonly SpecsRow[] = [
     {
       label: "Price (Ex-Showroom)",
-      key: "price",
-      format: (val: number) => `${formatINR(val)} (${formatINRFull(val)})`,
+      value: (car) => `${formatINR(car.price)} (${formatINRFull(car.price)})`,
     },
-    { label: "Propulsion", key: "fuelType" },
-    { label: "Structure", key: "type" },
-    { label: "Model Year", key: "year" },
+    { label: "Propulsion", value: (car) => car.fuelType },
+    { label: "Structure", value: (car) => car.type },
     {
-      label: "0-60 mph Time",
-      key: "specs.zeroToSixty",
-      path: ["specs", "zeroToSixty"],
-    },
-    { label: "Power output", key: "specs.power", path: ["specs", "power"] },
-    {
-      label: "Range / Economy",
-      key: "specs.rangeOrMpg",
-      path: ["specs", "rangeOrMpg"],
+      label: "Model Year",
+      value: (car) => (car.year ? String(car.year) : "Not listed"),
     },
     {
-      label: "Cargo volume",
-      key: "specs.cargoSpace",
-      path: ["specs", "cargoSpace"],
+      label: "Engine displacement",
+      value: (car) =>
+        car.datasetSpecs.engineCc
+          ? `${car.datasetSpecs.engineCc} cc`
+          : "Not listed",
+    },
+    { label: "Power output", value: (car) => car.specs.power },
+    {
+      label: "Torque",
+      value: (car) =>
+        car.datasetSpecs.torque
+          ? `${car.datasetSpecs.torque} Nm`
+          : "Not listed",
+    },
+    {
+      label: "Transmission",
+      value: (car) => car.datasetSpecs.transmission || "Not listed",
+    },
+    {
+      label: "Combined mileage",
+      value: (car) =>
+        car.datasetSpecs.mileageCombined
+          ? `${car.datasetSpecs.mileageCombined} km/l`
+          : car.specs.rangeOrMpg,
+    },
+    {
+      label: "Fuel tank capacity",
+      value: (car) =>
+        car.datasetSpecs.fuelTankCapacity
+          ? `${car.datasetSpecs.fuelTankCapacity} L`
+          : "Not listed",
+    },
+    {
+      label: "Seating capacity",
+      value: (car) =>
+        car.datasetSpecs.seatingCapacity
+          ? `${car.datasetSpecs.seatingCapacity} seats`
+          : "Not listed",
+    },
+    { label: "Cargo volume", value: (car) => car.specs.cargoSpace },
+    {
+      label: "Ground clearance",
+      value: (car) =>
+        car.datasetSpecs.groundClearance
+          ? `${car.datasetSpecs.groundClearance} mm`
+          : "Not listed",
+    },
+    {
+      label: "Safety rating",
+      value: (car) =>
+        car.datasetSpecs.safetyRating
+          ? `${car.datasetSpecs.safetyRating} / 5`
+          : "Not listed",
+    },
+    {
+      label: "Airbags",
+      value: (car) =>
+        car.datasetSpecs.airbagsCount
+          ? String(car.datasetSpecs.airbagsCount)
+          : "Not listed",
     },
   ];
 
@@ -57,20 +103,6 @@ export default function CarComparison({
     { label: "Comfort (Ride & Luxury)", key: "comfort" },
     { label: "Value (Purchase & Upkeep)", key: "value" },
   ] as const;
-
-  // Helper to resolve nested keys
-  const getNestedValue = (
-    obj: Record<string, unknown> | null | undefined,
-    path: readonly string[],
-  ): unknown => {
-    if (!obj) return undefined;
-    return path.reduce<unknown>((acc, part) => {
-      if (acc && typeof acc === "object") {
-        return (acc as Record<string, unknown>)[part];
-      }
-      return undefined;
-    }, obj);
-  };
 
   return (
     <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
@@ -151,27 +183,14 @@ export default function CarComparison({
                     <td className="py-3.5 pr-4 text-ivory-text-muted">
                       {row.label}
                     </td>
-                    {selectedCars.map((car) => {
-                      let val: unknown;
-                      if (row.path) {
-                        val = getNestedValue(
-                          car as unknown as Record<string, unknown>,
-                          row.path,
-                        );
-                      } else {
-                        val = car[row.key as keyof Car];
-                      }
-                      return (
-                        <td
-                          key={car.id}
-                          className="py-3.5 px-4 font-bold text-foreground font-serif italic"
-                        >
-                          {row.format && typeof val === "number"
-                            ? row.format(val)
-                            : String(val ?? "")}
-                        </td>
-                      );
-                    })}
+                    {selectedCars.map((car) => (
+                      <td
+                        key={car.id}
+                        className="py-3.5 px-4 font-bold text-foreground font-serif italic"
+                      >
+                        {row.value(car)}
+                      </td>
+                    ))}
                     {Array.from({ length: 3 - selectedCars.length }).map(
                       (_, idx) => (
                         <td key={idx} className="py-3.5 px-4 text-ivory-border">
