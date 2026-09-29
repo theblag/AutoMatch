@@ -616,6 +616,7 @@ export default function CarCard({
             Full details
           </Link>
           <button
+            type="button"
             onClick={() => {
               const next = !isExpanded;
               setIsExpanded(next);

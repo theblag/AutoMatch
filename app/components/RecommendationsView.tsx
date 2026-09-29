@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition, useCallback } from "react";
 import Link from "next/link";
 import {
   carsDatabase,
@@ -161,10 +161,10 @@ export default function RecommendationsView() {
     setPage(0);
   };
 
-  const handleVectorUpdatedFromAuth = (newVector: UserVectorData) => {
+  const handleVectorUpdatedFromAuth = useCallback((newVector: UserVectorData) => {
     setActiveVector(newVector);
     setPage(0);
-  };
+  }, []);
 
   // Central Adaptive Telemetry Handler: shifts active vector & persists to Neon DB
   const handleCarInteraction = async (
@@ -173,30 +173,24 @@ export default function RecommendationsView() {
   ) => {
     const carVec = extractCarVector(car);
 
-    // 1. Immediately update activeVector in React state -> instant re-ranking!
-    const newVector = adaptUserVector(activeVector, carVec.vector, actionType);
-    setActiveVector(newVector);
+    // 1. For deliberate bookmarking (LIKE), immediately tune activeVector in UI state
+    // For exploration (VIEW_SPECS, COMPARE), we log telemetry to Neon DB in background
+    // but DO NOT re-shuffle the list while the user is actively reading specs!
+    if (actionType === "LIKE") {
+      const newVector = adaptUserVector(activeVector, carVec.vector, actionType);
+      setActiveVector(newVector);
 
-    // 2. Visual Telemetry Notification Toast
-    const actionLabel =
-      actionType === "LIKE"
-        ? "Shortlisted"
-        : actionType === "COMPARE"
-          ? "Added to Compare"
-          : actionType === "VIEW_SPECS"
-            ? "Inspected Specs"
-            : "Clicked";
+      setTelemetryNotice(
+        `✦ Preferences tuned toward ${car.make} ${car.model} (Shortlisted)`,
+      );
+      setTimeout(() => {
+        setTelemetryNotice((curr) => (curr.includes(car.model) ? "" : curr));
+      }, 4500);
+    }
 
-    setTelemetryNotice(
-      `✦ AI Re-ranking Live: Shifted preferences toward ${car.make} ${car.model} (${actionLabel})`,
-    );
-    setTimeout(() => {
-      setTelemetryNotice((curr) => (curr.includes(car.model) ? "" : curr));
-    }, 4500);
-
-    // 3. Persist updated vector to Neon DB user_vectors with pgvector & log user_interactions
+    // 2. Persist updated vector to Neon DB user_vectors with pgvector & log user_interactions
     try {
-      const res = await fetch("/api/telemetry/interaction", {
+      await fetch("/api/telemetry/interaction", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -207,10 +201,6 @@ export default function RecommendationsView() {
           currentVector: activeVector,
         }),
       });
-      const data = await res.json();
-      if (data.success && data.updatedVector) {
-        setActiveVector(data.updatedVector);
-      }
     } catch {
       // background network failure gracefully handled
     }

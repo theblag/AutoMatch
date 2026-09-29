@@ -411,7 +411,6 @@ export const specificationGlossary: Record<string, string> = {
     "Time in seconds for the vehicle to accelerate from standstill to 100 km/h.",
   "Quarter Mile Time":
     "Time in seconds to accelerate over a quarter-mile (402 meters) distance.",
-  "ABS": "Anti-lock Braking System prevents wheels from locking during emergency braking.",
   "VVTI / VVT": "Variable Valve Timing system that optimizes engine performance and efficiency across RPM range.",
   "Fuel Injection":
     "Direct injection of fuel into cylinders for better combustion efficiency and performance.",

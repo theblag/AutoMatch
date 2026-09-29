@@ -20,7 +20,7 @@ export default function HeaderAuth({ onVectorUpdated }: HeaderAuthProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Check session on mount
+  // Check session once on mount
   useEffect(() => {
     async function loadSession() {
       try {
@@ -34,9 +34,6 @@ export default function HeaderAuth({ onVectorUpdated }: HeaderAuthProps) {
           if (data.needsProfileSetup) {
             setIsOnboardingOpen(true);
           }
-          if (onVectorUpdated && data.vector) {
-            onVectorUpdated(data.vector);
-          }
         }
       } catch (err) {
         console.error("Failed to load session:", err);
@@ -45,7 +42,7 @@ export default function HeaderAuth({ onVectorUpdated }: HeaderAuthProps) {
       }
     }
     loadSession();
-  }, [onVectorUpdated]);
+  }, []);
 
   const handleAuthSuccess = (newUser: AuthUser, newVector: UserVectorData) => {
     setUser(newUser);
